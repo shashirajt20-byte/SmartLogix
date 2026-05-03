@@ -1,0 +1,320 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique @db.VarChar(50)
+  description String? @db.Text
+
+  defaultUsers User[]     @relation("DefaultRole")
+  userRoles    UserRole[] @relation("UserRolesRole")
+
+  @@map("roles")
+}
+
+model User {
+  id           Int    @id @default(autoincrement())
+  username     String @unique @db.VarChar(50)
+  passwordHash String @map("password_hash") @db.VarChar(255)
+  email        String @unique @db.VarChar(100)
+  fullName     String @map("full_name") @db.VarChar(100)
+
+  roleId Int? @map("role_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  role      Role?      @relation("DefaultRole", fields: [roleId], references: [id])
+  userRoles UserRole[] @relation("UserRolesUser")
+
+  managedWarehouses Warehouse[]    @relation("WarehouseManager")
+  assignedShipments Shipment[]     @relation("ShipmentDriver")
+  drivenRoutes      Route[]        @relation("RouteDriver")
+  driverProfile     Driver?        @relation("UserDriverProfile")
+  notifications     Notification[] @relation("NotificationRecipient")
+  uploadedDocuments Document[]     @relation("DocumentUploader")
+
+  @@map("users")
+}
+
+model UserRole {
+  userId Int @map("user_id")
+  roleId Int @map("role_id")
+
+  user User @relation("UserRolesUser", fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation("UserRolesRole", fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@map("user_roles")
+}
+
+model Customer {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(100)
+  address   String   @db.VarChar(255)
+  phone     String   @unique @db.VarChar(20)
+  email     String   @unique @db.VarChar(100)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  shipments Shipment[]
+
+  @@map("customers")
+}
+
+model Warehouse {
+  id            Int      @id @default(autoincrement())
+  name          String   @db.VarChar(100)
+  location      String   @db.VarChar(255)
+  managerUserId Int?     @map("manager_user_id")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  manager   User?      @relation("WarehouseManager", fields: [managerUserId], references: [id], onDelete: SetNull)
+  stock     Stock[]
+  shipments Shipment[]
+
+  @@map("warehouses")
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String   @db.VarChar(100)
+  description String?  @db.Text
+  unitWeight  Decimal  @map("unit_weight") @db.Decimal(10, 2)
+  unitPrice   Decimal? @map("unit_price") @db.Decimal(10, 2)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  stock         Stock[]
+  shipmentItems ShipmentItem[]
+
+  @@map("products")
+}
+
+model Stock {
+  warehouseId Int      @map("warehouse_id")
+  productId   Int      @map("product_id")
+  quantity    Int      @default(0)
+  lastUpdated DateTime @updatedAt @map("last_updated")
+
+  warehouse Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@id([warehouseId, productId])
+  @@map("stock")
+}
+
+model Shipment {
+  id                  Int       @id @default(autoincrement())
+  customerId          Int       @map("customer_id")
+  originAddress       String    @map("origin_address") @db.VarChar(255)
+  destinationAddress  String    @map("destination_address") @db.VarChar(255)
+  scheduledPickup     DateTime  @map("scheduled_pickup")
+  scheduledDelivery   DateTime? @map("scheduled_delivery")
+  status              String    @default("pending") @db.VarChar(20)
+  totalWeight         Decimal   @map("total_weight") @db.Decimal(10, 2)
+  priority            String?   @db.VarChar(20)
+  serviceType         String?   @map("service_type") @db.VarChar(50)
+  paymentTerms        String?   @map("payment_terms") @db.VarChar(50)
+  insurance           Boolean?
+  notes               String?   @db.Text
+  shipmentType        String?   @map("shipment_type") @db.VarChar(50)
+  referenceNumber     String?   @map("reference_number") @db.VarChar(100)
+  warehouseId         Int?      @map("warehouse_id")
+  cargoType           String?   @map("cargo_type") @db.VarChar(50)
+  specialRequirements String?   @map("special_requirements") @db.Text
+  totalVolume         Decimal?  @map("total_volume") @db.Decimal(10, 2)
+  totalPackages       Int?      @map("total_packages")
+
+  assignedVehicleId Int? @map("assigned_vehicle_id")
+  assignedDriverId  Int? @map("assigned_driver_id")
+  routeId           Int? @map("route_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  warehouse       Warehouse? @relation(fields: [warehouseId], references: [id], onDelete: SetNull)
+  customer        Customer   @relation(fields: [customerId], references: [id])
+  assignedVehicle Vehicle?   @relation("ShipmentVehicle", fields: [assignedVehicleId], references: [id], onDelete: SetNull)
+  assignedDriver  User?      @relation("ShipmentDriver", fields: [assignedDriverId], references: [id], onDelete: SetNull)
+  route           Route?     @relation(fields: [routeId], references: [id], onDelete: SetNull)
+
+  shipmentItems  ShipmentItem[]
+  routeStops     RouteStop[]
+  trackingEvents TrackingEvent[]
+  notifications  Notification[]
+  documents      Document[]
+
+  @@map("shipments")
+}
+
+model ShipmentItem {
+  id         Int     @id @default(autoincrement())
+  shipmentId Int     @map("shipment_id")
+  productId  Int     @map("product_id")
+  quantity   Int     @default(1)
+  itemWeight Decimal @map("item_weight") @db.Decimal(10, 2)
+
+  shipment Shipment @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  product  Product  @relation(fields: [productId], references: [id])
+
+  @@map("shipment_items")
+}
+
+model Vehicle {
+  id              Int      @id @default(autoincrement())
+  vehicleNumber   String   @unique @map("vehicle_number") @db.VarChar(20)
+  vehicleType     String   @map("type") @db.VarChar(50)
+  capacityWeight  Decimal  @map("capacity_weight") @db.Decimal(10, 2)
+  capacityVolume  Decimal  @map("capacity_volume") @db.Decimal(10, 2)
+  currentStatus   String   @default("available") @map("current_status") @db.VarChar(20)
+  currentLocation String?  @map("current_location") @db.VarChar(255)
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  shipments      Shipment[]      @relation("ShipmentVehicle")
+  routes         Route[]
+  trackingEvents TrackingEvent[]
+
+  @@map("vehicles")
+}
+
+model Driver {
+  id            Int     @id @default(autoincrement())
+  userId        Int     @unique @map("user_id")
+  licenseNumber String  @unique @map("license_number") @db.VarChar(50)
+  phone         String? @db.VarChar(20)
+
+  user User @relation("UserDriverProfile", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("drivers")
+}
+
+model Route {
+  id            Int       @id @default(autoincrement())
+  vehicleId     Int       @map("vehicle_id")
+  driverId      Int       @map("driver_id")
+  startTime     DateTime  @map("start_time")
+  endTime       DateTime? @map("end_time")
+  totalDistance Decimal?  @map("total_distance") @db.Decimal(10, 2)
+  totalTime     Decimal?  @map("total_time") @db.Decimal(10, 2)
+  status        String    @default("planned") @db.VarChar(20)
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  vehicle Vehicle @relation(fields: [vehicleId], references: [id])
+  driver  User    @relation("RouteDriver", fields: [driverId], references: [id])
+
+  shipments  Shipment[]
+  routeStops RouteStop[]
+
+  @@map("routes")
+}
+
+model RouteStop {
+  id            Int       @id @default(autoincrement())
+  routeId       Int       @map("route_id")
+  sequenceOrder Int       @map("sequence_order")
+  shipmentId    Int?      @map("shipment_id")
+  latitude      Decimal   @db.Decimal(10, 7)
+  longitude     Decimal   @db.Decimal(10, 7)
+  arrivalTime   DateTime? @map("arrival_time")
+  departureTime DateTime? @map("departure_time")
+
+  route    Route     @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  shipment Shipment? @relation(fields: [shipmentId], references: [id], onDelete: SetNull)
+
+  @@map("route_stops")
+}
+
+model TrackingEvent {
+  id         Int      @id @default(autoincrement())
+  vehicleId  Int      @map("vehicle_id")
+  latitude   Decimal  @db.Decimal(10, 7)
+  longitude  Decimal  @db.Decimal(10, 7)
+  timestamp  DateTime @default(now())
+  shipmentId Int?     @map("shipment_id")
+
+  vehicle  Vehicle   @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  shipment Shipment? @relation(fields: [shipmentId], references: [id], onDelete: SetNull)
+
+  @@map("tracking_events")
+}
+
+model Notification {
+  id         Int      @id @default(autoincrement())
+  userId     Int?     @map("user_id")
+  shipmentId Int?     @map("shipment_id")
+  type       String   @db.VarChar(50)
+  message    String   @db.Text
+  isRead     Boolean  @default(false) @map("is_read")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  user     User?     @relation("NotificationRecipient", fields: [userId], references: [id], onDelete: SetNull)
+  shipment Shipment? @relation(fields: [shipmentId], references: [id], onDelete: SetNull)
+
+  @@map("notifications")
+}
+
+model Document {
+  id         Int      @id @default(autoincrement())
+  shipmentId Int?     @map("shipment_id")
+  userId     Int?     @map("user_id")
+  docType    String   @map("doc_type") @db.VarChar(50)
+  filePath   String   @map("file_path") @db.VarChar(255)
+  uploadedAt DateTime @default(now()) @map("uploaded_at")
+
+  shipment Shipment? @relation(fields: [shipmentId], references: [id], onDelete: SetNull)
+  user     User?     @relation("DocumentUploader", fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("documents")
+}
+
+model ShipmentMetric {
+  id           Int      @id @default(autoincrement())
+  metricName   String   @unique @map("metric_name") @db.VarChar(100)
+  metricValue  Decimal  @map("metric_value") @db.Decimal(10, 4)
+  calculatedAt DateTime @default(now()) @map("calculated_at")
+
+  @@map("shipment_metrics")
+}
+
+model Forecast {
+  id           Int      @id @default(autoincrement())
+  forecastDate DateTime @map("forecast_date") @db.Date
+  forecastType String   @map("forecast_type") @db.VarChar(50)
+  value        Decimal  @db.Decimal(10, 2)
+  details      String?  @db.Text
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("forecasts")
+}
+
+model AppSetting {
+  id          Int     @id @default(autoincrement())
+  key         String  @unique @db.VarChar(100)
+  value       String  @db.VarChar(255)
+  description String? @db.Text
+
+  @@map("app_settings")
+}
+
+model Carrier {
+  id          Int     @id @default(autoincrement())
+  name        String  @db.VarChar(100)
+  apiEndpoint String? @map("api_endpoint") @db.VarChar(255)
+  apiKey      String? @map("api_key") @db.VarChar(255)
+  contactInfo String? @map("contact_info") @db.VarChar(255)
+
+  @@map("carriers")
+}
