@@ -8,16 +8,8 @@
     "dev": "nodemon src/index.js"
   },
   "type": "module",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/shashirajt20-byte/SmartLogix.git"
-  },
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/shashirajt20-byte/SmartLogix/issues"
-  },
-  "homepage": "https://github.com/shashirajt20-byte/SmartLogix#readme",
   "description": "",
   "dependencies": {
     "bcrypt": "^6.0.0",

@@ -69,7 +69,7 @@ export async function createShipment(req, res) {
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: error.message ?? "Server error"
+            message: "Server error"
         })
     }
 }
@@ -129,10 +129,107 @@ export async function updateShipment(req, res){
                     `${deliveryDate}T${deliveryTime || "00:00"}`
                     )
                 : existingShipment.scheduledDelivery,
-
+                status : status || existingShipment.status,
+                totalWeight: totalWeight || existingShipment.totalWeight,
+                priority: priority || existingShipment.priority,
+                serviceType: serviceType || existingShipment.serviceType,
+                paymentTerms: paymentTerms || existingShipment.paymentTerms,
+                insurance: insurance || existingShipment.paymentTerms,
+                notes: notes || existingShipment.notes,
+                shipmentType: shipmentType || existingShipment.shipmentType,
+                referenceNumber: referenceNumber || existingShipment.referenceNumber,
+                warehouseId: warehouseId || existingShipment.warehouseId,
+                cargoType: cargoType || existingShipment.cargoType,
+                specialRequirements:
+                specialRequirements || existingShipment.specialRequirements,
+                totalVolume: totalVolume || existingShipment.totalVolume,
+                totalPackages: totalPackages || existingShipment.totalPackages,
+                vehicleId: assignedVehicleId || existingShipment.assignedVehicleId,
+                driverId: assignDriverId || existingShipment.assignDriverId
             }
+        });
+        return res.status(200).json({
+            success : true,
+            message : "Shipment updated successfully"
         })
     } catch (error) {
-         
+         return res.status(500).json({
+            success : false,
+            message : "Internal server error"
+         })
+    }
+}
+
+export async function deleteShipment(req, res){
+    try {
+        const {id} = req.params;
+        const existingShipment = await prisma.Shipment.findUnique({
+            where : {id}
+        });
+        if(!existingShipment){
+            return res.status(404).json({
+                success : false,
+                message : "Shipment not found"
+            })
+        }
+        await prisma.Shipment.delete({
+            where : {id}
+        });
+        return res.status(200).json({
+            success : true,
+            message : "Shipment deleted successfully"
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success : false,
+            message : "Internal server error"
+        })
+    }
+}
+
+export async function getDetail(req, res){
+    try {
+        const {id} = req.params;
+        const shipment = await prisma.Shipment.findUnique({
+            where : {id},
+            include: {
+                customerId : true,
+                originAddress: true,
+                destinationAddress : true,
+                scheduledPickup : true,
+                scheduledDelivery : true,
+                status : true,
+                totalWeight : true,
+                priority : true,
+                serviceType : true,
+                paymentTerms : true,
+                insurance : true,
+                notes : true,
+                shipmentType : true,
+                referenceNumber : true,
+                warehouseId : true,
+                cargoType : true,
+                specialRequirements : true,
+                totalVolume : true,
+                totalPackages : true,
+                vehicleId : true,
+                driverId : true
+            }
+        });
+        if(!shipment){
+            return res.status(404).json({
+                success : false,
+                message : "Shipment not found"
+            })
+        }
+        return res.status(200).json({
+            success : true,
+            data : shipment
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success : false,
+            message : "Internal server error"
+        })
     }
 }
