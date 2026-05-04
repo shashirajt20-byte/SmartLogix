@@ -25,7 +25,7 @@ export default function signupPage(){
             const data = await res.json();
             if(data.success){
                 setError(data.message);
-                router.push("/signin");
+                router.push("/auth/signin");
             }else{
                 setError(data.message);
             }
@@ -62,11 +62,13 @@ export default function signupPage(){
                     <div>
                         <p className="text-xs text-blue-700">Forgot Password</p>
                     </div>
-                    {
-                        error ?? (
-                            <p className="text-xs text-red">{error}</p>
-                        )
-                    }
+                    <div className="text-xs text-red-600">
+                        {
+                            error ?? (
+                                <p >{error}</p>
+                            )
+                        }
+                    </div>
                     <div className="place-items-center">
                         <button onClick={handleSubmit} className="bg-blue-600 text-white w-full rounded">SignUp</button>
                     </div>

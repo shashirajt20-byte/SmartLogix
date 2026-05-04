@@ -14,11 +14,11 @@ export default function signinPage(){
             const res = await fetch("http://localhost:4000/api/signin",{
                 method: "POST",
                 headers: {
-                    "Content-Tpye": "applicaton.json"
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify({email, password})
             });
-            const data = res.json();
+            const data = await res.json();
             if(data.success){
                 setError(data.message);
                 router.push("/");
@@ -52,11 +52,13 @@ export default function signinPage(){
                     <div>
                         <p className="text-xs text-blue-700">Forgot Password</p>
                     </div>
-                    {
-                        error ?? (
-                            <p className="text-xs text-red">{error}</p>
-                        )
-                    }
+                    <div className="text-xs text-red-600">
+                        {
+                            error ?? (
+                                <p >{error}</p>
+                            )
+                        }
+                    </div>
                     <div>
                         <button className="w-full bg-blue-700 rounded" onClick={handleSubmit}>Login</button>
                     </div>
