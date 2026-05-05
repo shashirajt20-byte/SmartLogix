@@ -1,9 +1,16 @@
 import prisma from "../services/prisma.js";
 import { generateToken } from "../utils/token.js";
+import bcrypt from "bcrypt"
 
 export async function signup(req, res){
     try {
         const {username, password, email, name} = req.body;
+        if(!username || !name || !email || password){
+            return res.status(400).json({
+                success : false,
+                message: "All fields are required"
+            })
+        }
         const existusername = await prisma.User.findUnique({
             where : {username}
         })
@@ -22,13 +29,13 @@ export async function signup(req, res){
                 message : "email already exist"
             })
         }
-        const hashpassword = await bcrypt.hashpassword(password,10);
+        const hashpassword = await bcrypt.hash(password,10);
         const user = await prisma.User.create({
             data : {
                 username,
-                password : hashpassword,
+                passwordHash : hashpassword,
                 email,
-                name
+                fullName: name
             }
         });
         const token = generateToken({
@@ -69,7 +76,7 @@ export async function singin(req, res){
                 message: "Invalid email"
             })
         }
-        const matchedPassword = await bcrypt.compare(password, user.password);
+        const matchedPassword = await bcrypt.compare(password, user.passwordHash);
         if(!matchedPassword){
             return res.status(400).json({
                 success : false,
