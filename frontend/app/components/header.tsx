@@ -6,9 +6,9 @@ export default function Header(){
             <div className="text-black">
                 <Menu />
             </div>
-            <div className="flex border rounded px-2 py-0.5">
-                <Search/>
-                <input className="border-none px-2.5" type="text" placeholder="Search anything..."/>
+            <div className="flex border rounded px-2 py-0.5 place-items-center">
+                <Search className="text-black size-4"/>
+                <input className="border-none px-2.5 text-black outline-none" type="text" placeholder="Search anything..."/>
             </div>
             <div className="flex gap-6 place-items-center text-black">
                 <Bell/>

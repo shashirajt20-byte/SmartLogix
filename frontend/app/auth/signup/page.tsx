@@ -1,4 +1,5 @@
 'use client'
+import { Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react"
 
@@ -8,19 +9,31 @@ export default function signupPage(){
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [showpassword, setShowpassword] = useState(false);
+    const [phone, setPhone] = useState("");
+    const [address, setAddress] = useState("");
 
     const router = useRouter();
+
+    function hidepassword(){
+        if(showpassword === false){
+            setShowpassword(true);
+
+        }else{
+            setShowpassword(false);
+        }
+    }
 
     async function handleSubmit(){
         try {
             const res = await fetch("http://localhost:4000/api/signup",{
-            method: "POST",
-            headers: {
-                "Content-Type" : "application/json"
-            },
-            body: JSON.stringify({
-                username, name, email, password
-            })
+                method: "POST",
+                headers: {
+                    "Content-Type" : "application/json"
+                },
+                body: JSON.stringify({
+                    username, name, email, password, phone, address
+                })
             });
             const data = await res.json();
             if(data.success){
@@ -45,19 +58,27 @@ export default function signupPage(){
                     </div>
                     <div className="flex flex-col gap-1">
                         <label className="text-xs text-black" htmlFor="">Username</label>
-                        <input className="border-2 rounded" type="text" name="" id="" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="username"/>
+                        <div className="border rounded"><input className="outline-none w-full text-black px-2" type="text" name="" id="" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="username"/></div>
                     </div>
                     <div  className="flex flex-col gap-1gap-1">
                         <label className="text-xs text-black" htmlFor="">Name</label>
-                        <input className="border-2 rounded" type="text" name="" id="" value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name"/>
+                        <div className="border rounded"><input className="outline-none w-full text-black px-2" type="text" name="" id="" value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name"/></div>
                     </div>
                     <div className="flex flex-col gap-1">
                         <label className="text-xs text-black" htmlFor="">Email</label>
-                        <input className="border-2 rounded" type="email" name="" id="" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@gmail.com"/>
+                        <div className="border rounded"><input className="outline-none w-full text-black px-2" type="email" name="" id="" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@gmail.com"/></div>
                     </div>
                     <div className="flex flex-col gap-1">
                         <label className="text-xs text-black" htmlFor="">Password</label>
-                        <input className="border-2 rounded" type="password" name="" id=""  value={password} onChange={(e) => setPassword(e.target.value)} placeholder="****"/>
+                        <div className="border rounded place-items-center flex justify-around"><input className="outline-none w-full text-black px-2" type={showpassword ? "text" : "password"} name="" id=""  value={password} onChange={(e) => setPassword(e.target.value)} placeholder="****"/><Eye className="size-4 text-black" onClick={hidepassword}/></div>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <label className="text-xs text-black" htmlFor="">Phone No</label>
+                        <div className="border rounded place-items-center flex justify-around"><input className="outline-none w-full text-black px-2 no-spin" type="number" name="" id=""  value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="phone no..."/></div>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <label className="text-xs text-black" htmlFor="">Address</label>
+                        <div className="border rounded place-items-center flex justify-around"><input className="outline-none w-full text-black px-2" type="text" name="" id=""  value={address} onChange={(e) => setAddress(e.target.value)} placeholder="address..."/></div>
                     </div>
                     <div>
                         <p className="text-xs text-blue-700">Forgot Password</p>

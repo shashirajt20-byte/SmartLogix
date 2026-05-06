@@ -1,4 +1,5 @@
 'use client'
+import { Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react"
 
@@ -6,8 +7,18 @@ export default function signinPage(){
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [showpassword, setShowpassword] = useState(false);
 
     const router = useRouter();
+
+    function hidepassword(){
+        if(showpassword === false){
+            setShowpassword(true);
+
+        }else{
+            setShowpassword(false);
+        }
+    }
 
     async function handleSubmit(){
         try {
@@ -43,11 +54,11 @@ export default function signinPage(){
                     </div>
                     <div className="flex flex-col gap-2">
                         <label className="text-xs text-black" htmlFor="">Email Address</label>
-                        <input className="border rounded" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@gmail.com"/>
+                        <div className="border rounded "><input className="outline-none text-black px-2 w-full" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@gmail.com"/></div>
                     </div>
                     <div className="flex flex-col gap-2">
                         <label className="text-xs text-black" htmlFor="">Password</label>
-                        <input className="border rounded" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="****"/>
+                        <div className="border rounded flex justify-around place-items-center"><input className="outline-none w-full text-black px-2" type={showpassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="****"/><Eye className="size-4 text-black" onClick={hidepassword}/></div>
                     </div>
                     <div>
                         <p className="text-xs text-blue-700">Forgot Password</p>

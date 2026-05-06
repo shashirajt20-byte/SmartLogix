@@ -194,7 +194,7 @@ model Driver {
   id            Int     @id @default(autoincrement())
   userId        Int     @unique @map("user_id")
   licenseNumber String  @unique @map("license_number") @db.VarChar(50)
-  phone         String? @db.VarChar(20)
+  phone         String? @unique @db.VarChar(20)
 
   user User @relation("UserDriverProfile", fields: [userId], references: [id], onDelete: Cascade)
 
