@@ -5,12 +5,16 @@ export async function createShipment(req, res) {
         const {
             customerId,
             originAddress,
+            originLat,
+            originLng,
             destinationAddress,
+            destinationLat,
+            destinationLng,
             pickupDate,
             pickupTime,
             deliveryDate,
             deliveryTime,
-            status,
+            // status,
             totalWeight,
             priority,
             serviceType,
@@ -28,6 +32,17 @@ export async function createShipment(req, res) {
             driverId
         } = req.body;
 
+        if(!customerId) return res.status(400).json({ success:false, message:"customerId missing" });
+        if(!originAddress) return res.status(400).json({ success:false, message:"originAddress missing" });
+        if(!destinationAddress) return res.status(400).json({ success:false, message:"destinationAddress missing" });
+        if(!pickupDate) return res.status(400).json({ success:false, message:"pickupDate missing" });
+        if(!pickupTime) return res.status(400).json({ success:false, message:"pickupTime missing" });
+        if(!deliveryDate) return res.status(400).json({ success:false, message:"deliveryDate missing" });
+        if(!deliveryTime) return res.status(400).json({ success:false, message:"deliveryTime missing" });
+        if(!shipmentType) return res.status(400).json({ success:false, message:"shipmentType missing" });
+        if(!totalWeight) return res.status(400).json({ success:false, message:"totalWeight missing" });
+        if(!totalPackages) return res.status(400).json({ success:false, message:"totalPackages missing" });
+
         if(!customerId || !originAddress || !destinationAddress || !pickupDate || !pickupTime || !deliveryDate || !deliveryTime || !shipmentType || !totalWeight || !totalPackages){
             return res.status(400).json({
                 success : false,
@@ -38,18 +53,22 @@ export async function createShipment(req, res) {
             data: {
                 customerId,
                 originAddress,
+                originLat,
+                originLng,
                 destinationAddress,
+                destinationLat,
+                destinationLng,
                 scheduledPickup: new Date(
                     `${pickupDate}T${pickupTime || "00:00"}`
                 ),
                 scheduledDelivery: deliveryDate
                     ? new Date(`${deliveryDate}T${deliveryTime || "00:00"}`): null,
-                status: "pending",
+                // status: "pending",
                 totalWeight,
                 priority,
                 serviceType,
                 paymentTerms,
-                insurance,
+                insurance: insurance === "Yes",
                 notes,
                 shipmentType,
                 referenceNumber,
@@ -57,16 +76,17 @@ export async function createShipment(req, res) {
                 cargoType,
                 specialRequirements,
                 totalVolume,
-                totalPackages: 1,
-                vehicleId: assignedVehicleId,
-                driverId: assignDriverId
+                totalPackages,
+                assignedVehicleId: vehicleId,
+                assignedDriverId: driverId
             }
         });
         return res.status(201).json({
-            succeses : true,
+            success : true,
             message : "New shipment is created"
         })
     } catch (error) {
+        console.log(error);
         return res.status(500).json({
             success: false,
             message: "Server error"
@@ -80,7 +100,11 @@ export async function updateShipment(req, res){
         const {
             customerId,
             originAddress,
+            originLat,
+            originLng,
             destinationAddress,
+            destinationLat,
+            destinationLng,
             pickupDate,
             pickupTime,
             deliveryDate,
@@ -115,8 +139,12 @@ export async function updateShipment(req, res){
             where : {id},
             data : {
                 customerId: customerId || existingShipment.customerId,
-                originAddress,
-                destinationAddress,
+                originAddress: originAddress || existingShipment.originAddress,
+                originLat: originLat || existingShipment.originLat,
+                originLng: originLng || existingShipment.originLng,
+                destinationAddress: destinationAddress || existingShipment.destinationAddress,
+                destinationLat: destinationLat || existingShipment.destinationLat,
+                destinationLng: destinationLng || existingShipment.destinationLng,
                 scheduledPickup:
                 pickupDate
                     ? new Date(
@@ -237,7 +265,7 @@ export async function getDetail(req, res){
 export async function getCustomers(req, res){
     try {
         const customers = await prisma.Customer.findMany();
-        console.log(customers);
+        // console.log(customers);
         if(!customers){
             return res.status(404).json({
                 success : false,

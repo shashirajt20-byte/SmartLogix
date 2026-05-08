@@ -119,7 +119,11 @@ model Shipment {
   id                  Int       @id @default(autoincrement())
   customerId          Int       @map("customer_id")
   originAddress       String    @map("origin_address") @db.VarChar(255)
+  originLat           Float
+  originLng           Float
   destinationAddress  String    @map("destination_address") @db.VarChar(255)
+  destinationLat      Float
+  destinationLng      Float
   scheduledPickup     DateTime  @map("scheduled_pickup")
   scheduledDelivery   DateTime? @map("scheduled_delivery")
   status              String    @default("pending") @db.VarChar(20)
