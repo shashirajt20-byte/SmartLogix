@@ -1,14 +1,10 @@
-export async function findBestVehicle(weight: Number, volume: Number){
+export async function findBestVehicle(weight, volume){
     try {
         const vehicles = await prisma.Vehicle.findMany({
             where: {
                 currentStatus: 'available',
-                capacityWeight: {
-                    gte: weight
-                },
-                capacityVolume: {
-                    gte: volume
-                }
+                capacityWeight: weight,
+                capacityVolume: volume
             }
         });
         if (!vehicles.length) {
@@ -23,7 +19,7 @@ export async function findBestVehicle(weight: Number, volume: Number){
     }
 }
 
-export async function getDriverCurrentLocation(driverId: Number){
+export async function getDriverCurrentLocation(driverId){
     try {
         const activeroute = await prisma.Route.findFirst({
             where : {
@@ -61,7 +57,7 @@ export async function getDriverCurrentLocation(driverId: Number){
     }
 }
 
-export async function getDriverCurrentLoad(driverId: Number){
+export async function getDriverCurrentLoad(driverId){
     try {
         const load = await prisma.Shipment.count({
             where: {
@@ -80,10 +76,10 @@ export async function getDriverCurrentLoad(driverId: Number){
 }
 
 export async function calculateDistance(
-    driverLat: Number,
-    driverLng: Number,
-    pickupLat: Number,
-    pickupLng: Number
+    driverLat,
+    driverLng,
+    pickupLat,
+    pickupLng
 ){
     try {
         const res = await fetch(`https://graphhopper.com/api/1/route?key=${process.env.GRAPHHOPPER_API_KEY}`,{
@@ -117,12 +113,12 @@ export async function calculateDistance(
     }
 }
 
-export async function findScore(distance: Number, currentLoad: number){
+export async function findScore(distance, currentLoad){
     const score = (distance * 0.7) + (currentLoad * 0.3);
     return score;
 }
 
-export async function assignDriver(shipmentId: Number){
+export async function assignDriver(shipmentId){
     try {
         const pickuplocation = await prisma.Shipment.findUnique({
             where : {
@@ -163,7 +159,7 @@ export async function assignDriver(shipmentId: Number){
     }
 }
 
-export async function calculateETA(originLat: Number, originLng: Number, destinationLat: Number, destinationLng: Number){
+export async function calculateETA(originLat, originLng, destinationLat, destinationLng){
     try {
         const res = await fetch(`https://graphhopper.com/api/1/route?key=${process.env.GRAPHHOPPER_API_KEY}`,{
             method: "POST",
@@ -203,7 +199,7 @@ export async function calculateETA(originLat: Number, originLng: Number, destina
     }
 }
 
-export async function optimizeRoute(shipmentId: Number){
+export async function optimizeRoute(shipmentId){
     try {
         const shipment = await prisma.Shipment.findUnique({
             where: {
@@ -213,7 +209,7 @@ export async function optimizeRoute(shipmentId: Number){
         if(!shipment){
             throw new Error("Shipment not found!");
         }
-        const bestVehicle = await findBestVehicle(shipment.totalWeight, totalVolume);
+        const bestVehicle = await findBestVehicle(shipment.totalWeight, shipment.totalVolume);
         const bestDriver = await assignDriver(shipment.id);
         const eta = await calculateETA(shipment.originLat, shipment.origiLng, shipment.destinationLat, shipment.destinationLng);
         const route = await prisma.Route.create({

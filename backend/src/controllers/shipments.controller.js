@@ -1,4 +1,5 @@
 import prisma from "../services/prisma.js";
+import { optimizeRoute } from "./routeOptmizer.controller.js";
 
 export async function createShipment(req, res) {
     try {
@@ -81,9 +82,11 @@ export async function createShipment(req, res) {
                 assignedDriverId: driverId
             }
         });
+        const optimizeRoute = await optimizeRoute(newShipment.id);
         return res.status(201).json({
             success : true,
-            message : "New shipment is created"
+            message : "New shipment is created and route optimized successfully",
+            data: optimizeRoute
         })
     } catch (error) {
         console.log(error);
