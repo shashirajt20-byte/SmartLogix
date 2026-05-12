@@ -120,7 +120,7 @@ export default function NewShipment(){
                     <div className="flex justify-between">
                         <div className="flex flex-col">
                             <label className="text-xs text-black" htmlFor="">Customer</label>
-                            <div className="border rounded">
+                            <div className="border rounded border-gray-200">
                                 <select className="w-full text-black rounded text-xs px-2.5 outline-none" value={customerId} onChange={(e) => setCustomerId(e.target.value)} name="" id="">
                                     <option value="">Select Customer</option>
                                     {
