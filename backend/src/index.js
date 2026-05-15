@@ -25,6 +25,9 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
   console.log("User connected");
+  socket.on("driverLocationUpdate", (data) => {
+    console.log("Driver Location:", data);
+    });
 });
 
 app.use("/api/", router);

@@ -111,7 +111,7 @@ export default function NewShipment(){
                 </div>
                 <div className="flex gap-7">
                     <button className="flex px-2 rounded place-items-center border" ><X className="size-4 gap-x-1.5 text-black"/><p className="text-sm p-1 text-black">Cancel</p></button>
-                    <button className="flex bg-blue-700 px-6 rounded place-items-center" onClick={handleSubmit}><Save className="size-4 gap-x-1.5"/><p className="text-sm p-1">Save Shipment</p></button>
+                    <button className="flex bg-blue-700 px-6 rounded place-items-center transition-transform duration-200 hover:scale-110 hover:bg-green-600 active:scale-95" onClick={handleSubmit}><Save className="size-4 gap-x-1.5"/><p className="text-sm p-1">Save Shipment</p></button>
                 </div>
             </div>
             <div className="flex flex-col gap-3.5 p-3">

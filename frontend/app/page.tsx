@@ -1,7 +1,21 @@
+
+'use client'
 import Image from "next/image";
+import { useEffect } from "react";
+import { io } from "socket.io-client";
 
 export default function Home() {
+  const socket = io("http://localhost:4000");
+  useEffect(() => {
+    socket.emit("driverLocationUpdate", {
+      shipmentId: 101,
+      vehicleId: 12,
+      latitude: 28.6139,
+      longitude: 77.2090,
+    });
+  }, []);
   return (
+    
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
       <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
         <Image
