@@ -33,6 +33,10 @@ io.on("connection", (socket) => {
 app.use("/api/", router);
 app.use("/shipment/", shipmentrouter);
 
+app.use("/", (req, res) => {
+    res.send("Welcome to the backend of the shipment tracking system");
+});
+
 server.listen(process.env.PORT, ()=>{
     console.log(`Server is running on ${process.env.PORT}`);
 })
