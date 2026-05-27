@@ -1,12 +1,12 @@
 public class Node{
     String city;
-    int distance;
-    Node(String city, int distance){
+    int cost;
+    Node(String city, int cost){
         this.city = city;
-        this.distance = distance;
+        this.cost = cost;
     }
     @Override
     public String toString() {
-        return city + " (" + distance + " km)";
+        return "(" + city + ", " + cost + ")";
     }
 }
