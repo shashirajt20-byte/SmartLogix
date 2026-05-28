@@ -1,3 +1,4 @@
+package com.scm.java_engine.graph;
 import java.util.*;
 
 public class Graph{
@@ -16,6 +17,11 @@ public class Graph{
         }
         for(Node neighbor : graph.get(source)){
             if(neighbor.city.equals(destination)){
+                neighbor.cost = newCost;
+            }
+        }
+        for(Node neighbor : graph.get(destination)){
+            if(neighbor.city.equals(source)){
                 neighbor.cost = newCost;
             }
         }

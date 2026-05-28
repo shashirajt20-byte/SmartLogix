@@ -1,7 +1,8 @@
+package com.scm.java_engine.graph;
 import java.util.*;
 
 public class Dijkstra{
-    public static void shortestPath(Graph graph, String start){
+    public static Map<String, Integer> shortestPath(Graph graph, String start){
         Map<String, Integer> distance = new HashMap<>();
         Map<String, String> parent = new HashMap<>();
         PriorityQueue<Node> pq = new PriorityQueue<>((a,b) -> a.cost - b.cost);
@@ -58,5 +59,7 @@ public class Dijkstra{
 
         System.out.println("\nShortest Path:");
         System.out.println(String.join(" -> ", path));
+
+        return distance;
     }
 }

@@ -1,3 +1,4 @@
+package com.scm.java_engine.graph;
 public class Node{
     String city;
     int cost;
