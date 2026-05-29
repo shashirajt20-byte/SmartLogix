@@ -241,6 +241,23 @@ model RouteStop {
   @@map("route_stops")
 }
 
+model RoadNetwork {
+
+  id              Int     @id @default(autoincrement())
+
+  sourceCity      String
+  destinationCity String
+
+  cost            Int
+
+  trafficLevel    String?
+  roadStatus      String?
+
+  createdAt       DateTime @default(now())
+
+  @@map("road_network")
+}
+
 model TrackingEvent {
   id         Int      @id @default(autoincrement())
   vehicleId  Int      @map("vehicle_id")

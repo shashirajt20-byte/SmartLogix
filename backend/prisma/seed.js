@@ -14,7 +14,31 @@ async function main() {
     ],
     skipDuplicates: true
   });
-
+  await prisma.roadNetwork.createMany({
+      data: [
+          {
+              sourceCity: "Delhi",
+              destinationCity: "Pune",
+              cost: 5,
+              trafficLevel: "low",
+              roadStatus: "open"
+          },
+          {
+              sourceCity: "Pune",
+              destinationCity: "Mumbai",
+              cost: 2,
+              trafficLevel: "medium",
+              roadStatus: "open"
+          },
+          {
+              sourceCity: "Delhi",
+              destinationCity: "Mumbai",
+              cost: 100,
+              trafficLevel: "high",
+              roadStatus: "open"
+          }
+      ]
+  });
   console.log("Roles seeded successfully");
 }
 

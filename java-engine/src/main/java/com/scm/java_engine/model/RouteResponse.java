@@ -1,4 +1,4 @@
-package scm.com.java_engine.model;
+package com.scm.java_engine.model;
 import java.util.*;
 
 public class RouteResponse{

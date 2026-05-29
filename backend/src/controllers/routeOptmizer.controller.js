@@ -129,6 +129,11 @@ export async function assignDriver(shipmentId){
             where : {
                 driverProfile : {
                     isNot : null,
+                },
+            assignedShipments: {
+              some: {
+                    warehouseId: bestWarehouse.id
+                  }
                 }
             }
         })
