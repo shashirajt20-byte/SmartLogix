@@ -12,13 +12,13 @@ import com.scm.java_engine.model.RouteData;
 public class RouteOptimizationService{
     public RouteResponse optimize(RouteRequest request){
         Graph graph = new Graph();
-        for(RouteData route = request.routes){
+        for(RouteData route : request.routes){
             graph.addEdge(
                 route.source,
                 route.destination,
                 route.cost
             );
         }
-        return Dijkstra.shortestPath(graph, request.source, request.destination, request.weight, request.volume, request.trafficLevel);
+        return Dijkstra.shortestPath(graph, request.source, request.destination);
     }
 }

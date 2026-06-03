@@ -1,6 +1,6 @@
-package com.scm.service;
+package com.scm.java_engine.service;
 
-import com.scm.model.WarehouseData;
+import com.scm.java_engine.model.WarehouseData;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

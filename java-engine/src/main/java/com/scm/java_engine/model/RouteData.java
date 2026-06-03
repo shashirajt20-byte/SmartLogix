@@ -1,4 +1,4 @@
-package com.scm.model;
+package com.scm.java_engine.model;
 
 public class RouteData{
     public String source;

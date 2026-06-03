@@ -1,6 +1,6 @@
-package com.scm.model;
+package com.scm.java_engine.model;
 
-pubilc class WarehouseData{
+public class WarehouseData{
     public int warehouseId;
     public String warehouseName;
     public String location;

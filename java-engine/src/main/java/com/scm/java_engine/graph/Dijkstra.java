@@ -49,8 +49,7 @@ public class Dijkstra{
         System.out.println(parent);
 
         List<String> path = new ArrayList<>();
-        String destinations = "Bangalore";
-        String current = destinations;
+        String current = destination;
 
         while(current != null){
             path.add(current);
