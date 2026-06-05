@@ -82,6 +82,11 @@ export async function createShipment(req, res) {
                 assignedDriverId: driverId
             }
         });
+        const warehouses = await prisma.warehouse.findMany({
+            include: {
+                stock: true
+            }
+        });
         const optimizeRoute = await optimizeRoute(newShipment.id);
         return res.status(201).json({
             success : true,

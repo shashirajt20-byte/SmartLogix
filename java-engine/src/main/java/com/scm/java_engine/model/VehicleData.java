@@ -2,17 +2,34 @@ package com.scm.java_engine.model;
 
 public class VehicleData {
 
-    public int vehicleId;
+    public int id;
+    public String vehicleNumber;
     public String vehicleType;
-    public double capacity;
-    public double currentLoad;
 
-    public VehicleData(int vehicleId, String vehicleType,
-                       double capacity, double currentLoad) {
+    public double capacityWeight;
+    public double capacityVolume;
 
-        this.vehicleId = vehicleId;
+    public String currentStatus;
+    public String currentLocation;
+
+    public VehicleData() {
+    }
+
+    public VehicleData(
+            int id,
+            String vehicleNumber,
+            String vehicleType,
+            double capacityWeight,
+            double capacityVolume,
+            String currentStatus,
+            String currentLocation
+    ) {
+        this.id = id;
+        this.vehicleNumber = vehicleNumber;
         this.vehicleType = vehicleType;
-        this.capacity = capacity;
-        this.currentLoad = currentLoad;
+        this.capacityWeight = capacityWeight;
+        this.capacityVolume = capacityVolume;
+        this.currentStatus = currentStatus;
+        this.currentLocation = currentLocation;
     }
 }

@@ -39,6 +39,26 @@ async function main() {
           }
       ]
   });
+  await prisma.warehouse.createMany({
+    data: [
+      {
+        name: "Delhi Warehouse",
+        location: "Delhi"
+      },
+      {
+        name: "Mumbai Warehouse",
+        location: "Mumbai"
+      },
+      {
+        name: "Pune Warehouse",
+        location: "Pune"
+      },
+      {
+        name: "Bangalore Warehouse",
+        location: "Bangalore"
+      }
+    ]
+  });
   console.log("Roles seeded successfully");
 }
 
