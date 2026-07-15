@@ -21,7 +21,7 @@ public class VehicleSelectionService {
             if (
                     vehicle.capacityWeight >= shipmentWeight
                             &&
-                    vehicle.capacityVolume >= shipmentVolume
+                    vehicle.capacityVolume >= shipm  entVolume
             ) {
 
                 if (
