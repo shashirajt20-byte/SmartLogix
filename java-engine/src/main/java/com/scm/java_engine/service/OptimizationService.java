@@ -55,7 +55,7 @@ public class OptimizationService {
         return new OptimizationResponse(
             bestWarehouse.warehouseId,
             bestDriver.driverId,
-            bestVehicle.vehicleId,
+            bestVehicle.id,
             routeResponse.route,
             routeResponse.cost,
             eta
