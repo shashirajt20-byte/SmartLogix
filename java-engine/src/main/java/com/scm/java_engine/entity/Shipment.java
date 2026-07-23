@@ -4,8 +4,13 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Entity
 @Table(name = "shipments")
+@Getter
+@Setter
 public class Shipment {
 
     @Id
@@ -17,15 +22,21 @@ public class Shipment {
 
     @Column(name = "origin_address", nullable = false)
     private String originAddress;
-
+    
+    @Column(name = "\"originLat\"")
     private Double originLat;
+
+    @Column(name = "\"originLng\"")
     private Double originLng;
+
+    @Column(name = "\"destinationLat\"")
+    private Double destinationLat;
+
+    @Column(name = "\"destinationLng\"")
+    private Double destinationLng;
 
     @Column(name = "destination_address", nullable = false)
     private String destinationAddress;
-
-    private Double destinationLat;
-    private Double destinationLng;
 
     @Column(name = "scheduled_pickup", nullable = false)
     private LocalDateTime scheduledPickup;

@@ -1,10 +1,15 @@
 package com.scm.java_engine.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "warehouses")
+@Getter
+@Setter
 public class Warehouse {
 
     @Id

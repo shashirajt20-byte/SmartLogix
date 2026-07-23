@@ -1,8 +1,12 @@
 package com.scm.java_engine.service;
 
+import com.scm.java_engine.entity.Driver;
+import com.scm.java_engine.entity.Vehicle;
+import com.scm.java_engine.entity.Warehouse;
 import com.scm.java_engine.model.*;
 import org.springframework.stereotype.Service;
-import java.util.Map;
+
+import java.math.BigDecimal;
 
 @Service
 public class OptimizationService {
@@ -14,11 +18,11 @@ public class OptimizationService {
     private final ETAService etaService;
 
     public OptimizationService(
-        WarehouseSelectionService warehouseService,
-        DriverAllocationService driverService,
-        VehicleSelectionService vehicleService,
-        ETAService etaService,
-        RouteOptimizationService routeService
+            WarehouseSelectionService warehouseService,
+            DriverAllocationService driverService,
+            VehicleSelectionService vehicleService,
+            ETAService etaService,
+            RouteOptimizationService routeService
     ) {
         this.warehouseService = warehouseService;
         this.driverService = driverService;
@@ -28,37 +32,63 @@ public class OptimizationService {
     }
 
     public OptimizationResponse optimize(OptimizationRequest request) {
-        RouteRequest routeRequest = new RouteRequest();
 
-        routeRequest.source = request.shipment.source;
-        routeRequest.destination = request.shipment.destination;
-        routeRequest.weight = request.shipment.weight;
-        routeRequest.volume = request.shipment.volume;
-        routeRequest.trafficLevel = request.shipment.trafficLevel;
-        routeRequest.routes = request.routes;
+        ShipmentData shipment = request.shipment;
 
-        RouteResponse routeResponse = routeService.optimize(routeRequest);
-
-        VehicleData bestVehicle = vehicleService.findBestVehicle(
-            request.vehicles,
-            request.shipment.weight,
-            request.shipment.volume
+        // 1. Find shortest route using road_network + Dijkstra
+        RouteResponse routeResponse = routeService.optimize(
+                shipment.source,
+                shipment.destination
         );
 
-        DriverData bestDriver = driverService.findBestDriver(request.drivers);
-        int eta = etaService.calculateETA(10, request.shipment.trafficLevel);
-        WarehouseData bestWarehouse = warehouseService.findBestWarehouse(
-            request.warehouses,
-            Map.of(1, routeResponse.cost)
+        // 2. Select best vehicle from database
+        Vehicle bestVehicle = vehicleService.findBestVehicle(
+                BigDecimal.valueOf(shipment.weight),
+                BigDecimal.valueOf(shipment.volume)
         );
+
+        // 3. Select driver from database
+        Driver bestDriver = driverService.findBestDriver();
+
+        // 4. Select warehouse from database
+        Warehouse bestWarehouse =
+                warehouseService.findBestWarehouse(
+                        shipment.weight,
+                        shipment.volume
+                );
+
+        // 5. Calculate ETA
+        int eta = etaService.calculateETA(
+                routeResponse.cost,
+                shipment.trafficLevel
+        );
+
+        // Safety checks
+        if (bestVehicle == null) {
+            throw new RuntimeException(
+                    "No suitable vehicle available"
+            );
+        }
+
+        if (bestDriver == null) {
+            throw new RuntimeException(
+                    "No driver available"
+            );
+        }
+
+        if (bestWarehouse == null) {
+            throw new RuntimeException(
+                    "No suitable warehouse available"
+            );
+        }
 
         return new OptimizationResponse(
-            bestWarehouse.warehouseId,
-            bestDriver.driverId,
-            bestVehicle.id,
-            routeResponse.route,
-            routeResponse.cost,
-            eta
+                bestWarehouse.getId(),
+                bestDriver.getUserId(),
+                bestVehicle.getId(),
+                routeResponse.route,
+                routeResponse.cost,
+                eta
         );
     }
 }

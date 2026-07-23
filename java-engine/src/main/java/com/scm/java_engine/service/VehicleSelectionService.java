@@ -1,39 +1,44 @@
 package com.scm.java_engine.service;
 
+import com.scm.java_engine.entity.Vehicle;
+import com.scm.java_engine.repository.VehicleRepository;
 import org.springframework.stereotype.Service;
-import com.scm.java_engine.model.VehicleData;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
 public class VehicleSelectionService {
 
-    public VehicleData findBestVehicle(
-            List<VehicleData> vehicles,
-            double shipmentWeight,
-            double shipmentVolume
+    private final VehicleRepository vehicleRepository;
+
+    public VehicleSelectionService(VehicleRepository vehicleRepository) {
+        this.vehicleRepository = vehicleRepository;
+    }
+
+    public Vehicle findBestVehicle(
+            BigDecimal shipmentWeight,
+            BigDecimal shipmentVolume
     ) {
 
-        VehicleData bestVehicle = null;
+        List<Vehicle> vehicles = vehicleRepository.findAll();
 
-        for (VehicleData vehicle : vehicles) {
+        Vehicle bestVehicle = null;
 
-            if (
-                    vehicle.capacityWeight >= shipmentWeight
-                            &&
-                    vehicle.capacityVolume >= shipmentVolume
-            ) {
+        for (Vehicle vehicle : vehicles) {
 
-                if (
-                        bestVehicle == null
-                                ||
-                        (
-                                vehicle.capacityWeight + vehicle.capacityVolume
-                        ) <
-                        (
-                                bestVehicle.capacityWeight + bestVehicle.capacityVolume
-                        )
-                ) {
+            // Skip vehicles that cannot carry the shipment
+            if (vehicle.getCapacityWeight().compareTo(shipmentWeight) >= 0
+                    &&
+                vehicle.getCapacityVolume().compareTo(shipmentVolume) >= 0) {
+
+                if (bestVehicle == null ||
+                    vehicle.getCapacityWeight()
+                           .add(vehicle.getCapacityVolume())
+                           .compareTo(
+                               bestVehicle.getCapacityWeight()
+                                          .add(bestVehicle.getCapacityVolume())
+                           ) < 0) {
 
                     bestVehicle = vehicle;
                 }

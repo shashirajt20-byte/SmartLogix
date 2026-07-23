@@ -1,37 +1,55 @@
 package com.scm.java_engine.service;
 
-import com.scm.java_engine.model.WarehouseData;
+import com.scm.java_engine.entity.Warehouse;
+import com.scm.java_engine.repository.WarehouseRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class WarehouseSelectionService {
 
-    public WarehouseData findBestWarehouse(
-            List<WarehouseData> warehouses,
-            Map<Integer, Integer> warehouseCostMap
-    ){
+    private final WarehouseRepository warehouseRepository;
 
-        WarehouseData bestWarehouse = null;
-        int minimumCost = Integer.MAX_VALUE;
+    public WarehouseSelectionService(
+            WarehouseRepository warehouseRepository
+    ) {
+        this.warehouseRepository = warehouseRepository;
+    }
 
-        for(WarehouseData warehouse : warehouses){
+    public Warehouse findBestWarehouse(
+            double shipmentWeight,
+            double shipmentVolume
+    ) {
 
-            if(warehouse.inventory <= 0){
+        List<Warehouse> warehouses =
+                warehouseRepository.findAll();
+
+        Warehouse bestWarehouse = null;
+
+        for (Warehouse warehouse : warehouses) {
+
+            if (warehouse.getCapacityWeight() == null ||
+                warehouse.getCapacityVolume() == null) {
                 continue;
             }
 
-            int cost =
-                    warehouseCostMap.getOrDefault(
-                            warehouse.warehouseId,
-                            Integer.MAX_VALUE
-                    );
+            boolean canHandleShipment =
+                    warehouse.getCapacityWeight() >= shipmentWeight
+                    &&
+                    warehouse.getCapacityVolume() >= shipmentVolume;
 
-            if(cost < minimumCost){
+            if (!canHandleShipment) {
+                continue;
+            }
 
-                minimumCost = cost;
+            if (bestWarehouse == null ||
+                warehouse.getCapacityWeight()
+                        + warehouse.getCapacityVolume()
+                <
+                bestWarehouse.getCapacityWeight()
+                        + bestWarehouse.getCapacityVolume()) {
+
                 bestWarehouse = warehouse;
             }
         }
