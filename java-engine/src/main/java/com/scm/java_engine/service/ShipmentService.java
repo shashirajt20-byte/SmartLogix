@@ -14,7 +14,7 @@ public class ShipmentService {
 
     public ShipmentService(ShipmentRepository shipmentRepository, OptimizationService optimizationService) {
         this.shipmentRepository = shipmentRepository;
-        OptimizationService = optimizationService;
+        this.optimizationService = optimizationService;
     }
 
     public Shipment createShipment(Shipment shipment) {

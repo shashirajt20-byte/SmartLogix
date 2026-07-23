@@ -25,11 +25,11 @@ public class Driver {
     @Column(nullable = false, unique = true)
     private String phone;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    // @Column(name = "created_at")
+    // private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    // @Column(name = "updated_at")
+    // private LocalDateTime updatedAt;
 
     public Driver() {
     }

@@ -22,38 +22,14 @@ public class WarehouseSelectionService {
             double shipmentVolume
     ) {
 
-        List<Warehouse> warehouses =
-                warehouseRepository.findAll();
+        List<Warehouse> warehouses = warehouseRepository.findAll();
 
-        Warehouse bestWarehouse = null;
-
-        for (Warehouse warehouse : warehouses) {
-
-            if (warehouse.getCapacityWeight() == null ||
-                warehouse.getCapacityVolume() == null) {
-                continue;
-            }
-
-            boolean canHandleShipment =
-                    warehouse.getCapacityWeight() >= shipmentWeight
-                    &&
-                    warehouse.getCapacityVolume() >= shipmentVolume;
-
-            if (!canHandleShipment) {
-                continue;
-            }
-
-            if (bestWarehouse == null ||
-                warehouse.getCapacityWeight()
-                        + warehouse.getCapacityVolume()
-                <
-                bestWarehouse.getCapacityWeight()
-                        + bestWarehouse.getCapacityVolume()) {
-
-                bestWarehouse = warehouse;
-            }
+        if (warehouses.isEmpty()) {
+            return null;
         }
 
-        return bestWarehouse;
+        // Temporary selection because warehouses table
+        // has no capacity/inventory fields
+        return warehouses.get(0);
     }
 }

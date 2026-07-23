@@ -20,23 +20,13 @@ public class Warehouse {
     private String name;
 
     @Column(nullable = false)
-    private String address;
+    private String location;
 
-    private Double latitude;
-
-    private Double longitude;
-
-    @Column(name = "capacity_weight")
-    private Double capacityWeight;
-
-    @Column(name = "capacity_volume")
-    private Double capacityVolume;
+    @Column(name = "manager_user_id")
+    private Integer managerUserId;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 
     public Warehouse() {
     }
