@@ -10,9 +10,11 @@ import java.util.List;
 public class ShipmentService {
 
     private final ShipmentRepository shipmentRepository;
+    private final OptimizationService optimizationService;
 
-    public ShipmentService(ShipmentRepository shipmentRepository) {
+    public ShipmentService(ShipmentRepository shipmentRepository, OptimizationService optimizationService) {
         this.shipmentRepository = shipmentRepository;
+        OptimizationService = optimizationService;
     }
 
     public Shipment createShipment(Shipment shipment) {
