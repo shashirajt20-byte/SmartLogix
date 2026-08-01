@@ -91,4 +91,43 @@ public class OptimizationService {
                 eta
         );
     }
+    public OptimizationResponse optimizeShipment(
+            double weight,
+            double volume
+    ) {
+    
+        Vehicle bestVehicle = vehicleService.findBestVehicle(
+                java.math.BigDecimal.valueOf(weight),
+                java.math.BigDecimal.valueOf(volume)
+        );
+    
+        Driver bestDriver = driverService.findBestDriver();
+    
+        Warehouse bestWarehouse =
+                warehouseService.findBestWarehouse(
+                        weight,
+                        volume
+                );
+    
+        if (bestVehicle == null) {
+            throw new RuntimeException("No suitable vehicle available");
+        }
+    
+        if (bestDriver == null) {
+            throw new RuntimeException("No driver available");
+        }
+    
+        if (bestWarehouse == null) {
+            throw new RuntimeException("No warehouse available");
+        }
+    
+        return new OptimizationResponse(
+                bestWarehouse.getId(),
+                bestDriver.getUserId(),
+                bestVehicle.getId(),
+                null,
+                0,
+                0
+        );
+    }
 }

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.scm.java_engine.model.SignupRequest;
 
 import com.scm.java_engine.entity.User;
 import com.scm.java_engine.service.AuthService;
@@ -19,10 +20,11 @@ public class AuthController {
         this.authService = authService;
     }
 
+    
+    
     @PostMapping("/signup")
-    public User signup(@RequestBody User user){
-
-        return authService.signup(user);
+    public User signup(@RequestBody SignupRequest request) {
+        return authService.signup(request);
     }
 
     @PostMapping("/signin")

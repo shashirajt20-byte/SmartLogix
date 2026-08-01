@@ -3,6 +3,8 @@ package com.scm.java_engine.service;
 import com.scm.java_engine.entity.Shipment;
 import com.scm.java_engine.repository.ShipmentRepository;
 import org.springframework.stereotype.Service;
+import com.scm.java_engine.model.OptimizationResponse;
+import java.time.LocalDateTime;
 
 import java.util.List;
 
@@ -45,7 +47,30 @@ public class ShipmentService {
             throw new IllegalArgumentException("Total packages is required");
         }
 
-        return shipmentRepository.save(shipment);
+        shipment.setCreatedAt(java.time.LocalDateTime.now());
+        shipment.setUpdatedAt(java.time.LocalDateTime.now());
+
+        Shipment savedShipment = shipmentRepository.save(shipment);
+        
+        OptimizationResponse response =
+                optimizationService.optimizeShipment(
+                        savedShipment.getTotalWeight().doubleValue(),
+                        savedShipment.getTotalVolume().doubleValue()
+                );
+        
+        savedShipment.setAssignedVehicleId(
+                response.vehicleId
+        );
+        
+        savedShipment.setAssignedDriverId(
+                response.driverId
+        );
+        
+        savedShipment.setWarehouseId(
+                response.warehouseId
+        );
+        
+        return shipmentRepository.save(savedShipment);
     }
 
 
@@ -229,7 +254,7 @@ public class ShipmentService {
                     updatedShipment.getRouteId()
             );
         }
-
+        existingShipment.setUpdatedAt(LocalDateTime.now());
         return shipmentRepository.save(existingShipment);
     }
 

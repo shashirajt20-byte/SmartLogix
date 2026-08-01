@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import com.scm.java_engine.model.SignupRequest;
 import com.scm.java_engine.entity.User;
 import com.scm.java_engine.repository.UserRepository;
 
@@ -18,28 +18,43 @@ public class AuthService {
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
-    public User signup(User user){
-        String email = user.getEmail();
-
-        Optional<User> existingEmail = userRepository.findByEmail(email);
-
-        if(existingEmail.isPresent()){
-            throw new RuntimeException("Email already resgistered");
-
+    public User signup(SignupRequest request) {
+    
+        Optional<User> existingEmail =
+                userRepository.findByEmail(request.getEmail());
+    
+        if (existingEmail.isPresent()) {
+            throw new RuntimeException("Email already registered");
         }
-        String hashedPassword = passwordEncoder.encode(user.getPasswordHash());
+    
+        User user = new User();
+    
+        user.setUsername(request.getUsername());
+        user.setEmail(request.getEmail());
+        user.setFullName(request.getFullName());
+        user.setRoleId(request.getRoleId());
+    
+        String hashedPassword =
+                passwordEncoder.encode(request.getPassword());
+    
         user.setPasswordHash(hashedPassword);
+        user.setCreatedAt(java.time.LocalDateTime.now());
+        user.setUpdatedAt(java.time.LocalDateTime.now());
+    
         return userRepository.save(user);
     }
 
     public User singin(String email, String password){
         Optional<User> user = userRepository.findByEmail(email);
+        if(user.isEmpty()){
+            throw new RuntimeException("Invalid email");
+        }
         User result = user.get();
         if(user.isEmpty()){
             throw new RuntimeException("Invalid email");
         }
-        if(password != result.getPasswordHash()){
-            throw new RuntimeException("Invalid Passworf");
+        if (!passwordEncoder.matches(password, result.getPasswordHash())) {
+            throw new RuntimeException("Invalid Password");
         }
         return result;
     }

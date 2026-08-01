@@ -1,7 +1,13 @@
 package com.scm.java_engine.model;
 
 import java.util.List;
+// import lombok.AllArgsConstructor;
+// import lombok.Getter;
+// import lombok.Setter;
 
+// @Getter
+// @Setter
+// @AllArgsConstructor
 public class OptimizationResponse {
 
     public int warehouseId;
