@@ -24,28 +24,60 @@ export default function signupPage(){
         }
     }
 
-    async function handleSubmit(){
+
+
+    async function handleSubmit() {
         try {
-            const res = await fetch("http://localhost:4000/api/signup",{
+            const res = await fetch("http://localhost:8080/api/auth/signup", {
                 method: "POST",
                 headers: {
-                    "Content-Type" : "application/json"
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    username, name, email, password, phone, address
-                })
+                    username: username,
+                    fullName: name,
+                    email: email,
+                    passwordHash: password,
+                    roleId: 2
+                }),
             });
+    
             const data = await res.json();
-            if(data.success){
-                setError(data.message);
+    
+            if (res.ok) {
+                setError("");
+                alert("Signup Successful");
                 router.push("/auth/signin");
-            }else{
-                setError(data.message);
+            } else {
+                setError(data.message || "Signup Failed");
             }
         } catch (error) {
-            console.log("Error is : ",error);
+            console.error(error);
+            setError("Unable to connect to server");
         }
     }
+    // async function handleSubmit(){
+    //     try {
+    //         const res = await fetch("http://localhost:8080/api/auth/signup",{
+    //             method: "POST",
+    //             headers: {
+    //                 "Content-Type" : "application/json"
+    //             },
+    //             body: JSON.stringify({
+    //                 username, name, email, password, phone, address
+    //             })
+    //         });
+    //         const data = await res.json();
+    //         if(data.success){
+    //             setError(data.message);
+    //             router.push("/auth/signin");
+    //         }else{
+    //             setError(data.message);
+    //         }
+    //     } catch (error) {
+    //         console.log("Error is : ",error);
+    //     }
+    // }
 
     return (
         <div className="bg-white h-screen place-items-center place-content-center">
@@ -84,11 +116,7 @@ export default function signupPage(){
                         <p className="text-xs text-blue-700">Forgot Password</p>
                     </div>
                     <div className="text-xs text-red-600">
-                        {
-                            error ?? (
-                                <p >{error}</p>
-                            )
-                        }
+                        {error && <p>{error}</p>}
                     </div>
                     <div className="place-items-center">
                         <button onClick={handleSubmit} className="bg-blue-600 text-white w-full rounded">SignUp</button>

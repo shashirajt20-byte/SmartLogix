@@ -22,7 +22,7 @@ export default function signinPage(){
 
     async function handleSubmit(){
         try {
-            const res = await fetch("http://localhost:4000/api/signin",{
+            const res = await fetch("http://localhost:8080/api/auth/signin",{
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
