@@ -39,12 +39,6 @@ public class RouteOptimizationService {
                     road.getCost()
             );
         }
-        // long start = System.nanoTime();
-        // return Dijkstra.shortestPath(
-        //         graph,
-        //         source,
-        //         destination
-        // );
 
         RouteResponse response =
                 Dijkstra.shortestPath(
@@ -52,14 +46,6 @@ public class RouteOptimizationService {
                         source,
                         destination
                 );
-        
-        // long end = System.nanoTime();
-        
-        // System.out.println(
-        //         "Dijkstra Execution : "
-        //         + ((end-start)/1_000_000.0)
-        //         + " ms"
-        // );
         
         return response;
     }
