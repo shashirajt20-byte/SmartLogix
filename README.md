@@ -1,381 +1,421 @@
-# 🚚 SmartLogix –  Intelligent Logistics & Route Optimization System
+# 🚚 SmartLogix – Intelligent Logistics & Route Optimization System
 
-# 📖 Overview
+SmartLogix is an intelligent logistics management system that automates shipment planning, resource allocation, and route optimization. The system automatically selects suitable warehouses, drivers, and vehicles, calculates optimized delivery routes using Dijkstra's algorithm, and estimates delivery time.
 
-SmartLogix is an intelligent logistics management platform that automates shipment planning and resource allocation. Instead of relying on manual dispatch decisions, the system automatically identifies the nearest warehouse, allocates the nearest available driver, selects the most suitable vehicle based on shipment constraints, computes the shortest delivery route using Dijkstra's algorithm, and estimates delivery time.
-
-The platform combines optimization algorithms, interactive maps, and a Spring Boot backend to streamline logistics operations and improve dispatch efficiency.
+The project is built around a Spring Boot backend with PostgreSQL persistence and an integrated web dashboard served directly from the Spring Boot application.
 
 ---
 
-## 📌 Table of Contents
+## 📖 Overview
 
-- Overview
-- Features
-- System Architecture
-- Tech Stack
-- Project Structure
-- Database Design
-- API Endpoints
-- Optimization Engine
-- Screenshots
-- Installation
-- Running the Project
-- Future Improvements
-- Author
+SmartLogix is designed to reduce manual effort in logistics operations by automating the complete shipment optimization workflow.
 
----
+The system provides functionality for:
 
-# 📖 Overview
+- User registration and authentication
+- Shipment management
+- Vehicle management
+- Driver allocation
+- Warehouse selection
+- Route optimization
+- Shortest-path calculation
+- ETA estimation
+- Real-time shipment tracking infrastructure
+- Interactive map visualization
+- Logistics monitoring through an integrated dashboard
 
-SmartLogix is designed to reduce manual effort in logistics operations by automating shipment planning and management.
+The dashboard is served directly by the Spring Boot application and is available at:
 
-The platform allows users to:
 
-- Create and manage shipments
-- Automatically assign vehicles
-- Automatically assign drivers
-- Select the most suitable warehouse
-- Compute the shortest delivery route
-- Estimate delivery time
-- Track shipments in real time (WebSocket infrastructure)
+http://localhost:8080
 
-The system uses graph-based route optimization and follows a layered Spring Boot architecture.
 
----
+✨ Features
 
-# ✨ Features
 
-## Authentication
+🔐 Authentication
 
-- User Registration
-- User Login
-- BCrypt Password Hashing
+User registration
+User login
+BCrypt password hashing
 
----
+📦 Shipment Management
 
-## Shipment Management
+Create shipments
+View shipments
+View shipment details
+Update shipments
+Delete shipments
 
-- Create Shipment
-- View Shipments
-- Update Shipment
-- Delete Shipment
+🚚 Intelligent Resource Allocation
 
----
+For a shipment, the system can determine:
 
-## Intelligent Optimization
+Suitable warehouse
+Available driver
+Suitable vehicle
+Delivery route
+Estimated delivery time
+🗺️ Route Optimization
+Graph-based road network
+Dijkstra's shortest-path algorithm
+Route calculation
+ETA estimation
+Latitude and longitude based locations
+🌍 Interactive Maps
+Leaflet-based interactive map
+GraphHopper integration
+Location coordinates
+Route visualization
+📡 Real-Time Tracking
 
-When a shipment is created, SmartLogix automatically:
+Spring WebSocket infrastructure is included for supporting live shipment tracking and future real-time vehicle updates.
 
-- Selects the best warehouse
-- Selects the best driver
-- Selects the best vehicle
-- Computes the shortest delivery route
-- Estimates delivery time
+📊 Integrated Dashboard
 
----
+The project includes a web dashboard served directly from Spring Boot.
 
-## Route Planning
+The dashboard provides:
 
-- Graph-based road network
-- Dijkstra's Shortest Path Algorithm
-- ETA calculation
+Shipment overview
+Vehicle information
+Driver information
+Warehouse information
+Route optimization
+Optimization results
+Delivery information
+Interactive map visualization
 
----
 
-## Maps
-
-- Interactive map using Leaflet
-- Address selection using GraphHopper
-- Latitude & Longitude storage
-
----
-
-## Real-Time Tracking
-
-Backend infrastructure implemented using Spring WebSocket for live shipment tracking.
-
----
-
-# 🏗️ System Architecture
+🏗️ System Architecture
 
 ```
-                +----------------------+
-                |     Next.js Frontend |
-                +----------+-----------+
-                           |
-                     REST APIs
-                           |
-                +----------v-----------+
-                |    Spring Boot API   |
-                +----------+-----------+
-                           |
-                Business Logic Layer
-                           |
-        +---------+--------+---------+
-        |         |                  |
- Vehicle Service Driver Service Warehouse Service
-        |         |                  |
-        +---------+--------+---------+
-                  |
-        Route Optimization Service
-                  |
-            Dijkstra Algorithm
-                  |
-             PostgreSQL Database
-```
-
----
-
-# 🛠 Tech Stack
-
-## Frontend
-
-- Next.js
-- TypeScript
-- Tailwind CSS
-- Leaflet
-- GraphHopper
-
----
-
-## Backend
-
-- Java 21
-- Spring Boot
-- Spring Data JPA
-- Hibernate
-- Spring WebSocket
-
----
-
-## Database
-
-- PostgreSQL
-
----
-
-## Algorithms
-
-- Dijkstra's Algorithm
-
----
-
-## Security
-
-- BCrypt Password Hashing
-
----
-
-## Tools
-
-- Maven
-- Git
-- Postman
-
----
-
-# 📂 Project Structure
+                         ┌─────────────────────────┐
+                         │     SmartLogix UI        │
+                         │  HTML / CSS / JavaScript │
+                         │       Leaflet Map        │
+                         └────────────┬────────────┘
+                                      │
+                                  REST APIs
+                                      │
+                         ┌────────────▼────────────┐
+                         │     Spring Boot API      │
+                         │                          │
+                         │      Controllers         │
+                         └────────────┬────────────┘
+                                      │
+                              Business Logic
+                                      │
+              ┌───────────────────────┼───────────────────────┐
+              │                       │                       │
+              ▼                       ▼                       ▼
+      Vehicle Service         Driver Service         Warehouse Service
+              │                       │                       │
+              └───────────────────────┼───────────────────────┘
+                                      │
+                                      ▼
+                         Route Optimization Service
+                                      │
+                                      ▼
+                         Dijkstra Shortest Path
+                                      │
+                                      ▼
+                              PostgreSQL Database
 
 ```
+
+
+🛠️ Tech Stack
+
+Backend
+Java 21
+Spring Boot
+Spring Data JPA
+Hibernate
+Spring WebSocket
+Database
+PostgreSQL
+Dashboard
+HTML
+CSS
+JavaScript
+Maps
+Leaflet
+GraphHopper
+Algorithm
+Dijkstra's Shortest Path Algorithm
+Security
+BCrypt Password Hashing
+Development Tools
+Maven
+Git
+GitHub
+Postman
+
+
+📂 Project Structure
+
+```
+
+
 SmartLogix
 │
-├── frontend
-│   ├── app
-│   ├── components
-│   ├── public
-│   └── ...
-│
 ├── java-engine
-│   ├── controller
-│   ├── service
-│   ├── repository
-│   ├── entity
-│   ├── model
-│   ├── config
-│   └── ...
+│   │
+│   ├── src
+│   │   ├── main
+│   │   │   │
+│   │   │   ├── java
+│   │   │   │   └── com
+│   │   │   │       └── scm
+│   │   │   │           └── java_engine
+│   │   │   │               │
+│   │   │   │               ├── controller
+│   │   │   │               ├── service
+│   │   │   │               ├── repository
+│   │   │   │               ├── entity
+│   │   │   │               ├── model
+│   │   │   │               ├── graph
+│   │   │   │               └── config
+│   │   │   │
+│   │   │   └── resources
+│   │   │       ├── application.properties
+│   │   │       └── static
+│   │   │           └── index.html
+│   │   │
+│   │   └── test
+│   │
+│   ├── pom.xml
+│   ├── mvnw
+│   └── mvnw.cmd
 │
 └── README.md
-```
-
----
-
-# 🗄 Database Design
-
-Main Tables
-
-- Users
-- Shipments
-- Drivers
-- Vehicles
-- Warehouses
-- Tracking Events
-- Road Network
-
----
-
-# 🚀 Optimization Workflow
 
 ```
-Customer Creates Shipment
-          │
-          ▼
-Locate Nearest Warehouse
-          │
-          ▼
-Allocate Nearest Available Driver
-          │
-          ▼
-Select Best Vehicle
-          │
-          ▼
-Compute Shortest Route
-          │
-          ▼
-Calculate ETA
-          │
-          ▼
-Save Shipment
-          │
-          ▼
-Return Optimized Dispatch Plan
+
+🗄️ Database Design
+
+The application uses PostgreSQL for persistent storage.
+
+The main entities include:
+
+Users
+Shipments
+Drivers
+Vehicles
+Warehouses
+Tracking Events
+Road Network
+
+Spring Data JPA and Hibernate are used for database interaction and entity management.
+
+🚀 Optimization Workflow
+
 ```
 
----
+                    Shipment Request
+                           │
+                           ▼
+                 Identify Warehouse
+                           │
+                           ▼
+                Find Available Driver
+                           │
+                           ▼
+                 Select Suitable Vehicle
+                           │
+                           ▼
+                 Calculate Shortest Route
+                           │
+                           ▼
+                  Dijkstra Algorithm
+                           │
+                           ▼
+                    Calculate ETA
+                           │
+                           ▼
+                  Save Shipment Data
+                           │
+                           ▼
+                Return Optimization Result
 
-# 🔗 API Endpoints
+```
 
-## Authentication
+🧠 Optimization Engine
 
-| Method | Endpoint |
-|---------|----------|
-| POST | /api/auth/signup |
-| POST | /api/auth/signin |
+The optimization engine is responsible for determining an efficient dispatch plan for a shipment.
 
----
+The process combines resource allocation with graph-based route optimization.
 
-## Shipments
+Route Calculation
 
-| Method | Endpoint |
-|---------|----------|
-| POST | /api/shipments |
-| GET | /api/shipments |
-| GET | /api/shipments/{id} |
-| PUT | /api/shipments/{id} |
-| DELETE | /api/shipments/{id} |
+The road network is represented as a graph consisting of nodes and edges.
 
----
+Dijkstra's algorithm is used to calculate the shortest path between the required locations.
 
-## Optimization
+```
 
-| Method | Endpoint |
-|---------|----------|
-| POST | /api/optimization |
+Start
+  │
+  ▼
+Warehouse
+  │
+  ├───────────────┐
+  ▼               ▼
+ Node A          Node B
+  │               │
+  ▼               ▼
+ Node C ──────── Node D
+                  │
+                  ▼
+              Destination
 
----
+```
 
-## Vehicles
+The resulting route can then be displayed on the dashboard using the interactive map.
 
-| Method | Endpoint |
-|---------|----------|
-| GET | /api/vehicles |
+🔗 API Endpoints
 
----
+```
 
-# ⚙️ Installation
+Authentication
+Method	Endpoint
+POST	/api/auth/signup
+POST	/api/auth/signin
+Shipments
+Method	Endpoint
+POST	/api/shipments
+GET	/api/shipments
+GET	/api/shipments/{id}
+PUT	/api/shipments/{id}
+DELETE	/api/shipments/{id}
+Optimization
+Method	Endpoint
+POST	/optimize
+Vehicles
+Method	Endpoint
+GET	/vehicles
 
-## Clone Repository
+```
 
-```bash
+⚙️ Installation
+1. Clone the Repository
 git clone https://github.com/shashirajt20-byte/SmartLogix.git
-```
 
----
+Navigate into the project:
 
-## Backend
+cd SmartLogix
+2. Navigate to the Backend
+cd java-engine
+3. Configure PostgreSQL
 
-```bash
-cd backend
-```
+Create a PostgreSQL database and update the database configuration in:
 
-Install dependencies
+src/main/resources/application.properties
 
-```bash
+Configure the following according to your local PostgreSQL setup:
+
+spring.datasource.url=jdbc:postgresql://localhost:5432/your_database
+spring.datasource.username=your_username
+spring.datasource.password=your_password
+4. Install Dependencies
+
+Using Maven:
+
 mvn clean install
-```
+▶️ Running the Project
 
-Run
+Start the Spring Boot application:
 
-```bash
 mvn spring-boot:run
+
+Once the application starts successfully, open:
+
+http://localhost:8080
+
+The SmartLogix dashboard will be served directly by the Spring Boot application.
+
+🖥️ Dashboard
+
+The project contains an integrated dashboard rather than a separate frontend application.
+
+The dashboard is located inside the Spring Boot application's static resources:
+
+src/main/resources/static/index.html
+
+Spring Boot serves this page automatically.
+
+Open:
+
+http://localhost:8080
+
+The dashboard can be used to interact with the logistics backend and visualize optimization results.
+
+🗺️ Map & Route Visualization
+
+SmartLogix uses Leaflet to provide an interactive map interface.
+
+The dashboard can visualize:
+
+Warehouses
+Drivers
+Vehicles
+Shipment locations
+Delivery destinations
+Optimized routes
+
+GraphHopper is used for location/routing-related functionality where configured.
+
+📡 Real-Time Tracking
+
+Spring WebSocket infrastructure is included to support real-time shipment tracking.
+
+The architecture can be extended to provide:
+
 ```
 
----
-
-## Frontend
-
-```bash
-cd frontend
-```
-
-Install dependencies
-
-```bash
-npm install
-```
-
-Run
-
-```bash
-npm run dev
-```
-
----
-
-## Database
-
-Create a PostgreSQL database.
-
-Update:
+Vehicle
+   │
+   ▼
+GPS / Location Update
+   │
+   ▼
+WebSocket
+   │
+   ▼
+Spring Boot Backend
+   │
+   ▼
+Dashboard
+   │
+   ▼
+Live Vehicle Location
 
 ```
-application.properties
-```
 
-with your:
 
-- Database URL
-- Username
-- Password
+🔮 Future Improvements
 
-Run the application.
 
----
+JWT-based authentication
+Role-based authorization
+Docker and Docker Compose
+Cloud deployment
+Redis caching
+Advanced delivery analytics
+Real-time GPS vehicle tracking
+Push notifications
+Machine-learning based route optimization
+Distributed route optimization
+Improved ETA prediction
+👨‍💻 Author
 
-# 📈 Future Improvements
-
-- JWT Authentication
-- Docker & Docker Compose
-- Cloud Deployment
-- Redis Caching
-- Role-Based Authorization
-- Notification Service
-- Delivery Analytics Dashboard
-
----
-
-# 👨‍💻 Author
-
-**Shashi Raj Sharma**
+Shashi Raj Sharma
 
 B.Tech Computer Science Engineering
 
-GitHub: https://github.com/shashirajt20-byte
+GitHub:
+https://github.com/shashirajt20-byte
 
-LinkedIn: https://www.linkedin.com/in/shashi-raj-7207a31b0/
-
----
-
-# ⭐ If you found this project useful
-
-Please consider giving it a ⭐ on GitHub.
+LinkedIn:
+https://www.linkedin.com/in/shashi-raj-7207a31b0/
